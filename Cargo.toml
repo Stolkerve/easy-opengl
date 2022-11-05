@@ -11,7 +11,7 @@ repository = "https://github.com/Stolkerve/easy-opengl"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-gl = "*"
+gl = "0.14.0"
 stb_image = "0.2.4"
 
 [profile.dev]

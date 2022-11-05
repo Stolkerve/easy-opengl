@@ -5,5 +5,5 @@ edition = "2021"
 
 [dependencies]
 easy-opengl = {path = "../"}
-gl = "*"
+gl = "0.14.0"
 sdl2 = "0.35.2"
