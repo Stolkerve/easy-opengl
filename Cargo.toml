@@ -7,7 +7,7 @@ author = "Sebastian Gonzalez <devsebasgr@gmail.com>"
 readme = "README.md"
 categories = ["opengl"]
 keywords = ["opengl", "tools", "easy"]
-repository = ""
+repository = "https://github.com/Stolkerve/easy-opengl"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
