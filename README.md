@@ -1,5 +1,5 @@
-### **easy-opengl** is a collection of utilities to make opengl app
-more quickly and easy without losing custumization and freedom. 
+[![Crates.io](https://img.shields.io/crates/v/easy-opengl.svg)](https://crates.io/crates/easy-opengl)
+### **easy-opengl** is a collection of utilities to make opengl app more quickly and easy without losing custumization and freedom. 
 
 # Example
 ``` rust
