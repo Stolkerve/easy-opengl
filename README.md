@@ -96,6 +96,8 @@ pub fn main() {
     ];
 
     let vao = VertexArray::new();
+
+    // Is important keep alive the variable, because when is out of scope it will destroy the buffer
     let _vbo = VertexBuffer::new(calc_bytes_size(&vertices) as isize, Some(&vertices));
 
     vao.bind();
@@ -105,6 +107,7 @@ pub fn main() {
         VertexAttrib::new(VertexAttribType::Float2, false, "aTexCoord".to_string()),
     ]);
 
+    // Is important keep alive the variable, because when is out of scope it will destroy the buffer
     let _ibo = IndexBuffer::new(calc_bytes_size(&indices) as isize, Some(&indices));
 
     let mut texture = Texture2D::new();

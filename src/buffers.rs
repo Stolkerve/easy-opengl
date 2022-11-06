@@ -246,7 +246,7 @@ pub struct VertexBuffer {
 
 impl VertexBuffer {
     /// Return a VertexBuffer with the allocated size provided, the buffer data is static only if
-    /// the verticies isn't None, else, the buffer data is dynamic 
+    /// the verticies isn't None, else, the buffer data is dynamic
     ///
     ///  # Arguments
     ///  * `size` - The size in bytes of the data to allocate
@@ -274,7 +274,7 @@ impl VertexBuffer {
         _self
     }
 
-    /// Write data that wasn't provided on the new function 
+    /// Write data that wasn't provided on the new function
     ///
     ///  # Arguments
     ///  * `size` - The size in bytes of the data to write
@@ -328,7 +328,7 @@ pub struct IndexBuffer {
 
 impl IndexBuffer {
     /// Return a IndexBuffer with the allocated size provided, the buffer data is static only if
-    /// the indices isn't None, else, the buffer data is dynamic 
+    /// the indices isn't None, else, the buffer data is dynamic
     ///
     ///  # Arguments
     ///  * `size` - The size in bytes of the data to allocate
@@ -359,7 +359,7 @@ impl IndexBuffer {
         _self
     }
 
-    /// Write data that wasn't provided on the new function 
+    /// Write data that wasn't provided on the new function
     ///
     ///  # Arguments
     ///  * `size` - The size in bytes of the data to write
@@ -390,11 +390,10 @@ impl IndexBuffer {
     }
 }
 
-
 /// A abstract representation of a dynamic uniform buffer
 pub struct UniforBuffer {
     pub id: u32,
-    pub slot: u32
+    pub slot: u32,
 }
 
 impl UniforBuffer {
@@ -402,7 +401,10 @@ impl UniforBuffer {
     /// * `size` - Size in bytes of the buffer
     /// * `binding` - The binding slot
     pub fn new(size: isize, binding: u32) -> Self {
-        let _self = Self { id: gen_buffer(), slot: binding };
+        let _self = Self {
+            id: gen_buffer(),
+            slot: binding,
+        };
         unsafe {
             gl::BufferData(gl::UNIFORM_BUFFER, size, std::ptr::null(), gl::DYNAMIC_DRAW);
             gl::BindBufferBase(gl::UNIFORM_BUFFER, _self.slot, _self.id);
@@ -420,5 +422,29 @@ impl UniforBuffer {
             gl::BindBufferBase(gl::UNIFORM_BUFFER, self.slot, self.id);
             gl::BufferSubData(gl::UNIFORM_BUFFER, offset, size, data);
         }
+    }
+}
+
+impl Drop for VertexArray {
+    fn drop(&mut self) {
+        unsafe { gl::DeleteVertexArrays(1, &self.id) }
+    }
+}
+
+impl Drop for VertexBuffer {
+    fn drop(&mut self) {
+        unsafe { gl::DeleteBuffers(1, &self.id) }
+    }
+}
+
+impl Drop for IndexBuffer {
+    fn drop(&mut self) {
+        unsafe { gl::DeleteBuffers(1, &self.id) }
+    }
+}
+
+impl Drop for UniforBuffer {
+    fn drop(&mut self) {
+        unsafe { gl::DeleteBuffers(1, &self.id) }
     }
 }
