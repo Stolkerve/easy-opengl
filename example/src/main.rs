@@ -30,9 +30,10 @@ const FRAGMENT_SHADER_SOURCE: &str = r#"
     in vec2 TexCoord;
 
     uniform sampler2D texture1;
+    uniform vec4 color = vec4(1.0);
 
     void main() {
-        FragColor = texture(texture1, TexCoord);
+        FragColor = texture(texture1, TexCoord) * color;
     }
 "#;
 
@@ -113,6 +114,7 @@ pub fn main() {
                 gl::Clear(gl::COLOR_BUFFER_BIT);
                 texture.bind();
                 shader.bind();
+                shader.set_uniform("color", UniformType::Fv4(0.1, 0.4, 0.2, 1.0));
                 vao.bind();
                 gl::DrawElements(
                     gl::TRIANGLES,

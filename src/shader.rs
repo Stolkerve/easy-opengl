@@ -7,6 +7,24 @@ use std::str;
 
 use gl::types::*;
 
+pub enum UniformType {
+    U32(u32),
+    I32(i32),
+    Uv2(u32, u32),
+    Iv2(i32, i32),
+    Uv3(u32, u32, u32),
+    Iv3(i32, i32, i32),
+    Uv4(u32, u32, u32, u32),
+    Iv4(i32, i32, i32, i32),
+    F32(f32),
+    F64(f64),
+    Fv2(f32, f32),
+    Fv3(f32, f32, f32),
+    Fv4(f32, f32, f32, f32),
+    M3(*const f32),
+    M4(*const f32),
+}
+
 /// A abstract representation of a shader
 ///  # Example
 /// ``` Rust
@@ -99,51 +117,53 @@ impl Shader {
         fail
     }
 
-    pub fn set_uniform_int(&mut self, name: &str, v: &i32) {
-        unsafe {
-            gl::Uniform1i(self.get_uniform_locacion(name), *v);
-        }
-    }
-
-    pub fn set_uniform_uint(&mut self, name: &str, v: &u32) {
-        unsafe {
-            gl::Uniform1ui(self.get_uniform_locacion(name), *v);
-        }
-    }
-
-    pub fn set_uniform_float(&mut self, name: &str, v: &f32) {
-        unsafe {
-            gl::Uniform1f(self.get_uniform_locacion(name), *v);
-        }
-    }
-
-    pub fn set_uniform_vec2(&mut self, name: &str, x: &f32, y: &f32) {
-        unsafe {
-            gl::Uniform2f(self.get_uniform_locacion(name), *x, *y);
-        }
-    }
-
-    pub fn set_uniform_vec3(&mut self, name: &str, x: &f32, y: &f32, z: &f32) {
-        unsafe {
-            gl::Uniform3f(self.get_uniform_locacion(name), *x, *y, *z);
-        }
-    }
-
-    pub fn set_uniform_vec4(&mut self, name: &str, x: &f32, y: &f32, z: &f32, w: &f32) {
-        unsafe {
-            gl::Uniform4f(self.get_uniform_locacion(name), *x, *y, *z, *w);
-        }
-    }
-
-    pub fn set_uniform_mat3(&mut self, name: &str, m: *const f32) {
-        unsafe {
-            gl::UniformMatrix3fv(self.get_uniform_locacion(name), 1, gl::FALSE, m);
-        }
-    }
-
-    pub fn set_uniform_mat4(&mut self, name: &str, m: *const f32) {
-        unsafe {
-            gl::UniformMatrix4fv(self.get_uniform_locacion(name), 1, gl::FALSE, m);
+    pub fn set_uniform(&mut self, name: &str, v: UniformType) {
+        match v {
+            UniformType::U32(v) => unsafe {
+                gl::Uniform1ui(self.get_uniform_locacion(name), v);
+            },
+            UniformType::I32(v) => unsafe {
+                gl::Uniform1i(self.get_uniform_locacion(name), v);
+            },
+            UniformType::Uv2(x, y) => unsafe {
+                gl::Uniform2ui(self.get_uniform_locacion(name), x, y);
+            },
+            UniformType::Iv2(x, y) => unsafe {
+                gl::Uniform2i(self.get_uniform_locacion(name), x, y);
+            },
+            UniformType::Uv3(x, y, z) => unsafe {
+                gl::Uniform3ui(self.get_uniform_locacion(name), x, y, z);
+            },
+            UniformType::Iv3(x, y, z) => unsafe {
+                gl::Uniform3i(self.get_uniform_locacion(name), x, y, z);
+            },
+            UniformType::Uv4(x, y, z, w) => unsafe {
+                gl::Uniform4ui(self.get_uniform_locacion(name), x, y, z, w);
+            },
+            UniformType::Iv4(x, y, z, w) => unsafe {
+                gl::Uniform4i(self.get_uniform_locacion(name), x, y, z, w);
+            },
+            UniformType::M3(m) => unsafe {
+                gl::UniformMatrix3fv(self.get_uniform_locacion(name), 1, gl::FALSE, m)
+            },
+            UniformType::M4(m) => unsafe {
+                gl::UniformMatrix4fv(self.get_uniform_locacion(name), 1, gl::FALSE, m)
+            },
+            UniformType::F32(v) => unsafe {
+                gl::Uniform1f(self.get_uniform_locacion(name), v);
+            },
+            UniformType::F64(v) => unsafe {
+                gl::Uniform1d(self.get_uniform_locacion(name), v);
+            },
+            UniformType::Fv2(x, y) => unsafe {
+                gl::Uniform2f(self.get_uniform_locacion(name), x, y);
+            },
+            UniformType::Fv3(x, y, z) => unsafe {
+                gl::Uniform3f(self.get_uniform_locacion(name), x, y, z);
+            },
+            UniformType::Fv4(x, y, z, w) => unsafe {
+                gl::Uniform4f(self.get_uniform_locacion(name), x, y, z, w);
+            },
         }
     }
 
@@ -152,7 +172,8 @@ impl Shader {
             return self.uniforms_location[name];
         }
         unsafe {
-            let location = gl::GetUniformLocation(self.program, name.as_ptr() as *const i8);
+            let c_name = CString::new(name.as_bytes()).unwrap();
+            let location = gl::GetUniformLocation(self.program, c_name.as_ptr());
             self.uniforms_location.insert(name.to_string(), location);
         }
         self.uniforms_location[name]
