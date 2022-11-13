@@ -12,6 +12,7 @@ pub enum VertexAttribType {
     Int2,
     Int3,
     Int4,
+    Uint,
     Byte,
 }
 
@@ -27,6 +28,7 @@ pub fn vertex_attrib_type_gl(vtype: &VertexAttribType) -> u32 {
         VertexAttribType::Int2 => gl::INT,
         VertexAttribType::Int3 => gl::INT,
         VertexAttribType::Int4 => gl::INT,
+        VertexAttribType::Uint => gl::UNSIGNED_INT,
         VertexAttribType::Byte => gl::BYTE,
     }
 }
@@ -43,6 +45,7 @@ pub fn vertex_attrib_type_size(vtype: &VertexAttribType) -> u32 {
         VertexAttribType::Int2 => 4 * 2,
         VertexAttribType::Int3 => 4 * 3,
         VertexAttribType::Int4 => 4 * 4,
+        VertexAttribType::Uint => 4,
         VertexAttribType::Byte => 1,
     }
 }
@@ -59,6 +62,7 @@ pub fn vertex_attrib_type_count(vtype: &VertexAttribType) -> u32 {
         VertexAttribType::Int2 => 2,
         VertexAttribType::Int3 => 3,
         VertexAttribType::Int4 => 4,
+        VertexAttribType::Uint => 1,
         VertexAttribType::Byte => 1,
     }
 }
@@ -251,8 +255,7 @@ impl VertexBuffer {
     ///  # Arguments
     ///  * `size` - The size in bytes of the data to allocate
     ///  * `vertices` - A optional data to write
-
-    pub fn new(size: isize, vertices: Option<&Vec<f32>>) -> Self {
+    pub fn new<T>(size: isize, vertices: Option<&Vec<T>>) -> Self {
         let _self = Self { id: gen_buffer() };
         _self.bind();
 
@@ -280,7 +283,7 @@ impl VertexBuffer {
     ///  * `size` - The size in bytes of the data to write
     ///  * `offset` - Point to a offset in the allocated space
     ///  * `vertices` - Data to write
-    pub fn send_data(&self, size: isize, offset: isize, vertices: &Vec<f32>) {
+    pub fn send_data<T>(&self, size: isize, offset: isize, vertices: &Vec<T>) {
         unsafe {
             self.bind();
             gl::BufferSubData(

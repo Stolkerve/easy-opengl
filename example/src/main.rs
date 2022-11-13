@@ -37,6 +37,11 @@ const FRAGMENT_SHADER_SOURCE: &str = r#"
     }
 "#;
 
+pub struct Vertex {
+    pub pos: [f32; 3],
+    pub uv: [f32; 2],
+}
+
 pub struct Window {
     pub sdl_context: sdl2::Sdl,
     pub sdl_window: sdl2::video::Window,
@@ -81,10 +86,22 @@ pub fn main() {
     shader.load_from_memory(VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE, None);
 
     let vertices = vec![
-        0.5, 0.5, 0.0, 1.0, 1.0, // top right
-        0.5, -0.5, 0.0, 1.0, 0.0, // bottom right
-        -0.5, -0.5, 0.0, 0.0, 0.0, // bottom left
-        -0.5, 0.5, 0.0, 0.0, 1.0, // top left
+        Vertex {
+            pos: [0.5, 0.5, 0.0],
+            uv: [1.0, 1.0],
+        }, // top right
+        Vertex {
+            pos: [0.5, -0.5, 0.0],
+            uv: [1.0, 0.0],
+        }, // bottom right
+        Vertex {
+            pos: [-0.5, -0.5, 0.0],
+            uv: [0.0, 0.0],
+        }, // bottom left
+        Vertex {
+            pos: [-0.5, 0.5, 0.0],
+            uv: [0.0, 1.0],
+        }, // top left
     ];
     let indices = vec![
         0, 1, 3, // first Triangle

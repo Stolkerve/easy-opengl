@@ -1,6 +1,6 @@
 [package]
 name = "easy-opengl"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 description = "A set of tools to make easy opengl without lossing custumization and freedom"
 author = "Sebastian Gonzalez <devsebasgr@gmail.com>"
